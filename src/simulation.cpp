@@ -181,5 +181,3 @@ void Simulation::run() {
     if (outf2.is_open()) outf2.close();
     if (outf.is_open()) outf.close();        
 }
-
-

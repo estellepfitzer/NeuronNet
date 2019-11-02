@@ -2,9 +2,7 @@
 
 /*! \class Neuron
   A neuron type is defined by four parameters \p a, \p b, \p c, \p d, and the "inhibitory" or "excitatory" quality. 
-
   Standard types are provided in \ref NeuronTypes and identified by a 2 or 3-letter string.
-
   The dynamic variables are the membrane potential, the recovery variable and the input. 
  */
 
@@ -79,4 +77,3 @@ private:
 ///@}
 
 };
-

@@ -128,3 +128,88 @@ void Network::print_traj(const int time, const std::map<std::string, size_t> &_n
             }
     (*_out) << std::endl;
 }
+
+std::vector<std::pair<size_t, double> > Network::neighbors(const size_t& n) const
+{
+	std::vector<std::pair<size_t, double> > linked_neurons;
+	for (linkmap::const_iterator it=links.lower_bound({n,0}) ; it!=links.end(); ++it) 
+	{	
+		if (it->first.first == n) 
+		{ 
+			std::pair<size_t, double> to_insert((it->first).second, it->second);
+			linked_neurons.push_back(to_insert);
+		}
+	}
+
+	return linked_neurons;
+}
+
+std::pair<size_t, double> Network::degree(const size_t& n) const
+{
+	std::vector<std::pair<size_t, double>> my_neighbors = neighbors(n);
+	
+	size_t nb_connect(0);
+	double total_intensity(0);
+	
+	for(size_t i(0); i < my_neighbors.size(); ++i)
+	{
+		++nb_connect;
+		total_intensity+= my_neighbors[i].second;
+		
+	}
+	return std::pair<size_t, double> (nb_connect,total_intensity);
+	
+}
+
+std::set<size_t> Network::step(const std::vector<double>& thalamic_input)
+{
+	std::set<size_t> firing_neurons;
+	std::vector<std::pair<size_t, double> > neurons_connected;
+	
+	double exit(0);
+	double inhib(0);
+	double tal(0);
+	
+	for(size_t i(0); i < neurons.size(); ++i)
+	{
+		if(neurons[i].firing())
+		{
+		firing_neurons.insert(i);
+		neurons[i].reset();
+		}
+	}
+	
+	for(size_t i(0); i < neurons.size(); ++i)
+	{
+		exit=0;
+		inhib=0;
+		
+		neurons_connected = neighbors(i);
+		
+		tal = thalamic_input[i];
+		if(neurons[i].is_inhibitory())
+		{
+				tal*=0.4;
+		}
+		for(size_t j(0); j < neurons_connected.size(); ++j)
+		{
+			if(firing_neurons.count(j) ==1)
+			{
+				if (neurons[neurons_connected[j].first].is_inhibitory()) 
+				{
+					inhib += (neurons_connected[j]).second;
+				}
+				else
+				{
+					exit += (neurons_connected[j]).second;
+				}
+			}
+		}
+		neurons[i].input(tal + (0.5*exit) + inhib);
+		neurons[i].step();
+		
+		
+	}
+
+	return firing_neurons;
+}

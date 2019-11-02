@@ -4,7 +4,6 @@
 
 /*! \class RandomNumbers
   This is a random number class based on standard c++-11 generators.
-
   This headers declares the global variable \ref main.cpp "_RNG", a pointer to the unique instance of this class.
  */
 
@@ -13,7 +12,6 @@ class RandomNumbers {
 public:
 /*! @name Initializing
   The generator \ref rng is a Mersenne twister *mt19937* engine. 
-
   A seed *s>0* can be provided, by default it is seeded with a *random_device*.
  */
 ///@{
@@ -24,7 +22,6 @@ public:
   These functions either return a single number 
   or fill a given vector with random numbers distributed 
   according the specified distributions. 
-
   The additional parameters are the standard parameters of these distributions.
  */
 ///@{
